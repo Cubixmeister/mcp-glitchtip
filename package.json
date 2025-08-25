@@ -1,0 +1,37 @@
+{
+  "name": "mcp-glitchtip",
+  "version": "0.1.0",
+  "description": "An MCP server for GlitchTip error monitoring",
+  "type": "module",
+  "bin": {
+    "mcp-glitchtip": "build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "inspector": "npx @modelcontextprotocol/inspector build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coffebar/mcp-glitchtip.git"
+  },
+  "author": "coffebar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coffebar/mcp-glitchtip/issues"
+  },
+  "homepage": "https://github.com/coffebar/mcp-glitchtip#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.2",
+    "node-fetch": "^3.3.2",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.6",
+    "typescript": "^5.8.3"
+  }
+}
