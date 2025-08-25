@@ -12,14 +12,15 @@ import { z } from "zod";
 const server = new McpServer(
   {
     name: "mcp-glitchtip",
-    version: "0.1.0"
+    version: "0.1.2"
   }
 );
 
 // Initialize GlitchTip client with environment variables
 const glitchTipClient = new GlitchTipClient({
   baseUrl: process.env.GLITCHTIP_BASE_URL || 'https://app.glitchtip.com',
-  sessionId: process.env.GLITCHTIP_SESSION_ID!,
+  token: process.env.GLITCHTIP_TOKEN,
+  sessionId: process.env.GLITCHTIP_SESSION_ID,
   organization: process.env.GLITCHTIP_ORGANIZATION!
 });
 

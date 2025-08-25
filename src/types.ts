@@ -76,7 +76,8 @@ export interface GlitchTipEvent {
 
 export interface GlitchTipConfig {
   baseUrl: string;
-  sessionId: string;
+  sessionId?: string;
+  token?: string;
   organization: string;
 }
 

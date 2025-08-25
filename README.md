@@ -28,11 +28,20 @@ AI Assistant:
 
 You'll need:
 
-- **Session ID**: Your GlitchTip authentication token
+- **Authentication**: Either an API token (recommended) or Session ID Cookie
 - **Organization Slug**: Your organization identifier in GlitchTip
 - **Base URL** (optional): Your GlitchTip instance URL if self-hosted
 
-#### Getting Your Session ID
+#### Authentication Options
+
+**Option 1: API Token (Recommended)**
+
+1. Log in to your GlitchTip instance
+2. Go to /profile/auth-tokens
+3. Create a new API token with appropriate permissions
+4. Copy the token for use as `GLITCHTIP_TOKEN`
+
+**Option 2: Session ID**
 
 1. Log in to your GlitchTip instance
 2. Open browser developer tools (F12)
@@ -51,7 +60,7 @@ Create a `.mcp.json` file in your project root:
       "command": "npx",
       "args": ["-y", "mcp-glitchtip"],
       "env": {
-        "GLITCHTIP_SESSION_ID": "your-session-id-here",
+        "GLITCHTIP_TOKEN": "your-api-token-here",
         "GLITCHTIP_ORGANIZATION": "your-org-slug",
         "GLITCHTIP_BASE_URL": "https://app.glitchtip.com"
       }
@@ -74,9 +83,12 @@ When you open your project folder in Claude Desktop, it will automatically detec
 
 | Environment Variable     | Required | Description                          | Default                     |
 | ------------------------ | -------- | ------------------------------------ | --------------------------- |
-| `GLITCHTIP_SESSION_ID`   | Yes      | Your GlitchTip session cookie        | -                           |
+| `GLITCHTIP_TOKEN`        | Yes*     | Your GlitchTip API token (recommended) | -                           |
+| `GLITCHTIP_SESSION_ID`   | Yes*     | Your GlitchTip session cookie        | -                           |
 | `GLITCHTIP_ORGANIZATION` | Yes      | Organization slug from GlitchTip URL | -                           |
 | `GLITCHTIP_BASE_URL`     | No       | GlitchTip instance URL               | `https://app.glitchtip.com` |
+
+*Either `GLITCHTIP_TOKEN` or `GLITCHTIP_SESSION_ID` is required. If both are provided, `GLITCHTIP_TOKEN` takes priority.
 
 ### Self-Hosted GlitchTip
 
@@ -165,7 +177,8 @@ npm run inspector
 Set the required environment variables before running the inspector:
 
 ```bash
-export GLITCHTIP_SESSION_ID="your-session-id"
+export GLITCHTIP_TOKEN="your-api-token"
+# OR export GLITCHTIP_SESSION_ID="your-session-id"
 export GLITCHTIP_ORGANIZATION="your-org"
 npm run inspector
 ```
@@ -174,11 +187,12 @@ npm run inspector
 
 ### Authentication Errors
 
-If you see "Authentication failed. Check your session ID":
+If you see "Authentication failed. Check your token or session ID":
 
-1. Your session may have expired - get a new session ID from GlitchTip
-2. Verify you're using the correct organization slug
-3. Check if your GlitchTip instance requires additional authentication headers
+1. If using a token: Verify it's valid and has appropriate permissions
+2. If using a session ID: Your session may have expired - get a new session ID from GlitchTip
+3. Verify you're using the correct organization slug
+4. Check if your GlitchTip instance requires additional authentication headers
 
 ### Connection Errors
 
@@ -199,9 +213,7 @@ If the tool returns empty results:
 ## Security Notes
 
 - **Never commit `.mcp.json` to version control** - it contains sensitive credentials
-- Session IDs expire - you'll need to update them periodically
-- Consider using environment variables instead of hardcoding credentials in `.mcp.json`
-- For team usage, each developer should use their own session ID
+- For team usage, each developer should use their own API token or session ID
 
 ## Contributing
 

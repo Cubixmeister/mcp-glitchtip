@@ -4,7 +4,7 @@
       "command": "npx",
       "args": ["-y", "mcp-glitchtip"],
       "env": {
-        "GLITCHTIP_SESSION_ID": "your-session-id-here",
+        "GLITCHTIP_TOKEN": "your-api-token-here",
         "GLITCHTIP_ORGANIZATION": "your-organization-slug",
         "GLITCHTIP_BASE_URL": "https://app.glitchtip.com"
       }
