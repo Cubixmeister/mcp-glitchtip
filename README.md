@@ -1,49 +1,38 @@
-# MCP GlitchTip Server
+# MCP GlitchTip
 
-An MCP (Model Context Protocol) server for GlitchTip error monitoring integration. This server allows AI assistants to quickly find and analyze relevant issues from your GlitchTip error monitoring.
+An MCP (Model Context Protocol) server that integrates GlitchTip error monitoring with AI assistants like Claude. This allows AI to analyze and help resolve errors from your GlitchTip instance.
 
-## Use Case
+## What it does
 
-When you tell an AI agent "look at GlitchTip, we have an issue with the payment component", the AI can:
+This MCP server enables AI assistants to:
 
-1. **Get Issues List**: Fetch all current issues from GlitchTip
-2. **Find Relevant Issues**: Match issues by title, error message, or component name
-3. **Get Latest Event**: Retrieve the most recent event with full context (stack trace, user data, breadcrumbs)
-4. **Analyze & Suggest**: Use the error context to propose solutions
+- Fetch and analyze current issues from your GlitchTip instance
+- Get detailed error context including stack traces, user data, and breadcrumbs
+- Help debug and suggest solutions based on error patterns
 
-## Features
+### Example Use Case
 
-- **Simple Issue Fetching**: Get list of all issues
-- **Latest Event Details**: Get the most recent event for any issue with full context
+```
+User: "Check GlitchTip for any payment-related errors"
 
-## Installation
-
-### Using npx (Recommended)
-
-```bash
-npx mcp-glitchtip
+AI Assistant:
+- Fetches all unresolved issues from GlitchTip
+- Identifies payment component errors
+- Analyzes stack traces and error patterns
+- Suggests specific fixes based on the error context
 ```
 
-### Manual Installation
+## Quick Start
 
-```bash
-git clone https://github.com/coffebar/mcp-glitchtip.git
-cd mcp-glitchtip
-npm install
-npm run build
-```
+### 1. Get Your GlitchTip Credentials
 
-## Configuration
+You'll need:
 
-### Environment Variables
+- **Session ID**: Your GlitchTip authentication token
+- **Organization Slug**: Your organization identifier in GlitchTip
+- **Base URL** (optional): Your GlitchTip instance URL if self-hosted
 
-The server requires the following environment variables:
-
-- `GLITCHTIP_SESSION_ID` (required): Your GlitchTip session ID
-- `GLITCHTIP_ORGANIZATION` (required): Organization slug
-- `GLITCHTIP_BASE_URL` (optional): GlitchTip base URL (defaults to https://app.glitchtip.com)
-
-### Getting Your Session ID
+#### Getting Your Session ID
 
 1. Log in to your GlitchTip instance
 2. Open browser developer tools (F12)
@@ -51,9 +40,9 @@ The server requires the following environment variables:
 4. Find the `sessionid` cookie value
 5. Copy this value for use as `GLITCHTIP_SESSION_ID`
 
-### Claude Desktop Configuration
+### 2. Configure Your Project
 
-Add to your `claude_desktop_config.json` or `.mcp.json`:
+Create a `.mcp.json` file in your project root:
 
 ```json
 {
@@ -71,76 +60,152 @@ Add to your `claude_desktop_config.json` or `.mcp.json`:
 }
 ```
 
-## Usage
+**Note**: Add `.mcp.json` to your `.gitignore` to keep credentials secure:
 
-### Available Tools
-
-#### `glitchtip_issues`
-Get all issues from GlitchTip.
-
-No parameters required.
-
-#### `glitchtip_latest_event`
-Get the latest event for a specific issue.
-
-Parameters:
-- `issueId`: The issue ID to get the latest event for
-
-### Available Resources
-
-#### `glitchtip://issues`
-All issues from GlitchTip error monitoring.
-
-## Example Usage
-
-```
-User: "Look at GlitchTip, we have an issue with the payment component"
-
-AI Agent:
-1. Calls glitchtip_issues to get all current issues
-2. Finds issues related to "payment" in the title or description
-3. Calls glitchtip_latest_event for the relevant issue
-4. Analyzes the error context and suggests solutions
+```bash
+echo ".mcp.json" >> .gitignore
 ```
 
-## Error Handling
+### 3. Open Your Project in Claude Desktop
 
-The server includes comprehensive error handling for:
+When you open your project folder in Claude Desktop, it will automatically detect the `.mcp.json` configuration and connect to your GlitchTip instance.
 
-- **Connection Errors**: Network issues or invalid URLs
-- **Authentication Errors**: Invalid session IDs or expired sessions
-- **API Errors**: GlitchTip API responses and rate limiting
-- **Validation Errors**: Invalid parameters or missing configuration
+## Configuration Options
+
+| Environment Variable     | Required | Description                          | Default                     |
+| ------------------------ | -------- | ------------------------------------ | --------------------------- |
+| `GLITCHTIP_SESSION_ID`   | Yes      | Your GlitchTip session cookie        | -                           |
+| `GLITCHTIP_ORGANIZATION` | Yes      | Organization slug from GlitchTip URL | -                           |
+| `GLITCHTIP_BASE_URL`     | No       | GlitchTip instance URL               | `https://app.glitchtip.com` |
+
+### Self-Hosted GlitchTip
+
+If you're using a self-hosted GlitchTip instance, update the `GLITCHTIP_BASE_URL`:
+
+```json
+"GLITCHTIP_BASE_URL": "https://glitchtip.your-domain.com"
+```
+
+## Available Tools
+
+### `glitchtip_issues`
+
+Fetches all issues from GlitchTip (unresolved by default).
+
+**Usage**: "Show me all GlitchTip errors"
+
+### `glitchtip_latest_event`
+
+Gets the most recent event for a specific issue with full error context.
+
+**Parameters**:
+
+- `issueId`: The issue ID to get details for
+
+**Usage**: "Get details for GlitchTip issue #123"
+
+## Available Resources
+
+### `glitchtip://issues`
+
+A resource endpoint that provides all current issues in JSON format.
+
+## Example Workflows
+
+### Debugging a Production Error
+
+```
+User: "Check GlitchTip for recent 500 errors"
+
+AI: [Fetches issues] I found 3 recent 500 errors:
+1. DatabaseConnectionError in /api/users
+2. TimeoutError in payment processing
+3. ValidationError in checkout flow
+
+User: "Show me details about the payment timeout"
+
+AI: [Gets latest event] The TimeoutError occurs when...
+[Provides stack trace analysis and suggested fixes]
+```
+
+### Monitoring Error Trends
+
+```
+User: "What are the most frequent errors in GlitchTip?"
+
+AI: [Analyzes issue counts] The top errors by frequency are:
+1. CORS policy errors (145 occurrences)
+2. Missing authentication token (89 occurrences)
+3. Rate limit exceeded (67 occurrences)
+```
 
 ## Development
 
-### Setup
+### Building from Source
+
 ```bash
 git clone https://github.com/coffebar/mcp-glitchtip.git
 cd mcp-glitchtip
 npm install
-```
-
-### Build
-```bash
 npm run build
 ```
 
-### Watch Mode
+### Development Mode
+
 ```bash
-npm run watch
+npm run watch  # Auto-rebuild on changes
 ```
 
 ### Testing with MCP Inspector
+
 ```bash
 npm run inspector
 ```
 
-## License
+Set the required environment variables before running the inspector:
 
-MIT License - see LICENSE file for details.
+```bash
+export GLITCHTIP_SESSION_ID="your-session-id"
+export GLITCHTIP_ORGANIZATION="your-org"
+npm run inspector
+```
+
+## Troubleshooting
+
+### Authentication Errors
+
+If you see "Authentication failed. Check your session ID":
+
+1. Your session may have expired - get a new session ID from GlitchTip
+2. Verify you're using the correct organization slug
+3. Check if your GlitchTip instance requires additional authentication headers
+
+### Connection Errors
+
+If you see "Failed to connect to GlitchTip":
+
+1. Verify your `GLITCHTIP_BASE_URL` is correct
+2. Check if you're behind a proxy or firewall
+3. Ensure your GlitchTip instance is accessible from your network
+
+### No Issues Found
+
+If the tool returns empty results:
+
+1. Verify there are actually issues in your GlitchTip project
+2. Check if your organization slug is correct
+3. Ensure your session has permission to view the issues
+
+## Security Notes
+
+- **Never commit `.mcp.json` to version control** - it contains sensitive credentials
+- Session IDs expire - you'll need to update them periodically
+- Consider using environment variables instead of hardcoding credentials in `.mcp.json`
+- For team usage, each developer should use their own session ID
 
 ## Contributing
+
+Contributions are welcome! Please:
 
 1. Fork the repository
 2. Create a feature branch
@@ -148,8 +213,12 @@ MIT License - see LICENSE file for details.
 4. Add tests if applicable
 5. Submit a pull request
 
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
 ## Support
 
-For issues and questions:
-- GitHub Issues: https://github.com/coffebar/mcp-glitchtip/issues
-- Documentation: https://github.com/coffebar/mcp-glitchtip#readme
+- **Issues**: [GitHub Issues](https://github.com/coffebar/mcp-glitchtip/issues)
+- **Documentation**: [GitHub README](https://github.com/coffebar/mcp-glitchtip#readme)
+- **GlitchTip Docs**: [GlitchTip Documentation](https://glitchtip.com/documentation)
