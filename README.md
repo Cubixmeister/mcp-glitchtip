@@ -51,7 +51,38 @@ You'll need:
 
 ### 2. Configure Your Project
 
+#### Option A: Using Docker/Podman (Recommended)
+
 Create a `.mcp.json` file in your project root:
+
+```json
+{
+  "mcpServers": {
+    "glitchtip": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "-e",
+        "GLITCHTIP_TOKEN=your-api-token-here",
+        "-e",
+        "GLITCHTIP_BASE_URL=https://app.glitchtip.com",
+        "-e",
+        "GLITCHTIP_ORGANIZATION=your-org-slug",
+        "ghcr.io/coffebar/mcp-glitchtip:latest"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**Using Podman instead of Docker:**
+
+Replace `"command": "docker"` with `"command": "podman"` in the configuration above.
+
+#### Option B: Using NPM
 
 ```json
 {
